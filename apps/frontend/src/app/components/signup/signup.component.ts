@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../shared/auth.service';
 import { LoginData } from '../../shared/user';
@@ -10,18 +10,18 @@ import { LoginData } from '../../shared/user';
   styleUrls: ['./signup.component.css'],
 })
 export class SignupComponent implements OnInit {
-  registerForm: FormGroup;
+  registerForm!: FormGroup;
   constructor(
     public fb: FormBuilder,
     public authService: AuthService,
     public router: Router
-  ) {
+  ) {}
+  ngOnInit() {
     this.registerForm = this.fb.group({
-      email: [''],
-      password: [''],
+      email: ['', [Validators.required]],
+      password: ['',[Validators.required]],
     });
   }
-  ngOnInit() {}
   onRegister(form: FormGroup) {
 
     const payload: LoginData = {

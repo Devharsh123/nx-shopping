@@ -6,7 +6,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { UserprofileComponent } from './components/userprofile/userprofile.component';
 import { AuthGuard } from "./shared/auth.guard";
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', redirectTo: '/log-in', pathMatch: 'full' },
   { path: 'log-in', component: SigninComponent },
   { path: 'sign-up', component: SignupComponent },

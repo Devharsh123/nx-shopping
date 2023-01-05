@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto, RegisterDto } from './dto/create-user.dto';
@@ -24,8 +24,10 @@ export class UserService {
   }
 
   async findUser(email: string): Promise<any>{
-    const user = await this.userModel.findOne({email});
-    console.log(user,'useruser')
+    const user = await this.userModel.findOne({email: email});
+    if(!user){
+      throw new HttpException('User not exist', HttpStatus.BAD_REQUEST)
+    }
     return user;
   }
 

@@ -1,16 +1,67 @@
-import { TestBed } from '@angular/core/testing';
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { getTestBed, TestBed } from "@angular/core/testing";
+import { AuthService } from "./auth.service";
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
+import { of } from "rxjs";
 
-import { AuthService } from './auth.service';
+export class User {
+  _id: string='';
+  email: string='';
+  password: string='';
+  __v: number=0;
+}
 
-describe('AuthService', () => {
-  let service: AuthService;
+export class Token {
+  access_token: string =''
+}
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+const user ={
+  email:'demo@gmail.com',
+  password: 'demo123'
+}
+
+const loggedInUser = {
+  email: 'kevin@gmail.com',
+  password: 'kevin123'
+}
+
+const api = 'http://localhost:3333/api'
+
+describe('Auth Service',()=>{
+  let httpMock: HttpTestingController;
+ let service: AuthService;
+  beforeEach(()=>{
+    TestBed.configureTestingModule({
+      imports: [HttpClientModule,HttpClientTestingModule],
+      providers: []
+    });
     service = TestBed.inject(AuthService);
-  });
+    httpMock = TestBed.inject(HttpTestingController)
+  })
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+  it('should return user',()=>{
+    service.registerUser(user).subscribe(user=>{
+      expect(user).toStrictEqual(typeof User)
+    })
+
+    const req = httpMock.expectOne({
+      method: 'POST',
+      url: `${api}/user/create`
+    });
+    expect(req.request.method).toBe('POST');
+    req.flush(typeof User)
+  })
+
+  it('should return user',()=>{
+    service.loginUser(loggedInUser).subscribe(user=>{
+      expect(user).toStrictEqual(typeof User)
+    })
+
+    const req = httpMock.expectOne({
+      method: 'POST',
+      url: `${api}/auth/login`
+    });
+    expect(req.request.method).toBe('POST');
+    req.flush(typeof User)
+  })
+})

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../shared/auth.service';
 import { LoginData, User } from '../../shared/user';
@@ -9,17 +9,18 @@ import { LoginData, User } from '../../shared/user';
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css'],
 })
-export class SigninComponent {
+export class SigninComponent implements OnInit {
   loginForm!: FormGroup;
 
   constructor(
     private authApi: AuthService,
     private router: Router,
     private fb: FormBuilder
-  ){
+  ){}
+  ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: [''],
-      password: ['']
+      email: ['',[Validators.required]],
+      password: ['',[Validators.required]]
     })
   }
   onLogin(form: FormGroup){
