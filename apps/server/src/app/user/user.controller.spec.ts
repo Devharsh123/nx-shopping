@@ -81,7 +81,7 @@ describe('UserController', () => {
 
     it('should create user', async () => {
       const user = await (new userModel(userStub.exceptionalUser()).save());
-      expect(user._id).toBe(user._id)
+      expect(user.email).toBe(userStub.exceptionalUser().email)
 
     })
   })
