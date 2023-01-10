@@ -1,15 +1,19 @@
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AuthService } from '../../shared/auth.service';
+import { User } from '../../shared/user';
 
 import { SignupComponent } from './signup.component';
 
 describe('SignupComponent', () => {
   let component: SignupComponent;
   let fixture: ComponentFixture<SignupComponent>;
+  let httpController: HttpTestingController;
+  let authService: AuthService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -19,16 +23,19 @@ describe('SignupComponent', () => {
         ReactiveFormsModule,
         FormsModule,
         HttpClientModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
       ],
       declarations: [SignupComponent],
+      providers: [AuthService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignupComponent);
     component = fixture.componentInstance;
-    component.ngOnInit();
-    fixture.detectChanges();
 
+    httpController = TestBed.inject(HttpTestingController);
+    authService = TestBed.inject(AuthService);
+    fixture.detectChanges();
+    component.ngOnInit();
   });
 
   it('should create', () => {
@@ -55,5 +62,21 @@ describe('SignupComponent', () => {
     component.registerForm.controls['email'].setValue("test@gmail.com");
     component.registerForm.controls['password'].setValue("test123");
     expect(component.registerForm.valid).toBeTruthy();
+  })
+
+  it(' Should provide valid user',()=>{
+    expect(component.registerForm.valid).toBeFalsy();
+    component.registerForm.controls['email'].setValue("test@gmail.com");
+    component.registerForm.controls['password'].setValue("test123");
+    expect(component.registerForm.valid).toBeTruthy();
+
+    const data = {
+      email: 'test@gmail.com',
+      password: 'test123'
+    }
+    component.authService.registerUser(data).subscribe((res)=>{
+      expect(res).toStrictEqual(User);
+    })
+
   })
 });

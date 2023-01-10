@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../shared/auth.service';
-import { LoginData, User } from '../../shared/user';
+import { LoginData } from '../../shared/user';
 
 @Component({
   selector: 'nx-shopping-signin',
@@ -11,28 +11,27 @@ import { LoginData, User } from '../../shared/user';
 })
 export class SigninComponent implements OnInit {
   loginForm!: FormGroup;
-
   constructor(
-    private authApi: AuthService,
-    private router: Router,
-    private fb: FormBuilder
+    public fb: FormBuilder,
+    public authService: AuthService,
+    public router: Router,
   ){}
-  ngOnInit(): void {
+  ngOnInit() {
     this.loginForm = this.fb.group({
       email: ['',[Validators.required]],
       password: ['',[Validators.required]]
     })
-  }
+  };
   onLogin(form: FormGroup){
+
     const payload: LoginData ={
       email: form.value.email,
       password: form.value.password
     }
 
-    this.authApi.loginUser(payload).subscribe((res: any)=>{
-      console.log(res)
+    this.authService.loginUser(payload).subscribe((res: any)=>{
       if(res.access_token){
-       this.authApi.storeUserData(res.access_token)
+       this.authService.storeUserData(res.access_token)
        this.router.navigate(['/user-profile'])
       }
     })

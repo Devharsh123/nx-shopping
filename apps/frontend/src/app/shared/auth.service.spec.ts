@@ -1,8 +1,7 @@
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { getTestBed, TestBed } from "@angular/core/testing";
+import { HttpClientModule } from "@angular/common/http";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { AuthService } from "./auth.service";
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { of } from "rxjs";
 
 export class User {
   _id: string='';
@@ -39,7 +38,7 @@ describe('Auth Service',()=>{
     httpMock = TestBed.inject(HttpTestingController)
   })
 
-  it('should return user',()=>{
+  it('should return user',fakeAsync(()=>{
     service.registerUser(user).subscribe(user=>{
       expect(user).toStrictEqual(typeof User)
     })
@@ -49,8 +48,11 @@ describe('Auth Service',()=>{
       url: `${api}/user/create`
     });
     expect(req.request.method).toBe('POST');
-    req.flush(typeof User)
-  })
+    req.flush(typeof User);
+
+    tick();
+    expect(service)
+  }))
 
   it('should return user',()=>{
     service.loginUser(loggedInUser).subscribe(user=>{
